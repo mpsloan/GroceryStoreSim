@@ -23,6 +23,10 @@ public class Customer implements Comparable<Customer> {
         }
     }
 
+    public int getItems() {
+        return items;
+    }
+
     @Override
     public int compareTo(Customer other) {
         if (this.arrivalTime < other.arrivalTime) {
