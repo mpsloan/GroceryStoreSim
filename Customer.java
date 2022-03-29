@@ -3,15 +3,26 @@ public class Customer implements Comparable<Customer> {
     private double arrivalTime;
     private int items;
     private double pickupTime;
+    private boolean checkoutReady;
 
     public Customer(double arrivalTime, int items, double pickupTime) {
         this.arrivalTime = arrivalTime;
         this.items = items;
         this.pickupTime = pickupTime;
+        this.checkoutReady = false;
     }
 
-    public double checkoutReady() {
-        return (items * pickupTime) + arrivalTime;
+    public double checkoutReadyTime() {
+        return items * pickupTime;
+    }
+
+    public boolean checkoutReady() {
+        return checkoutReady;
+    }
+
+    public boolean isReady() {
+        checkoutReady = true;
+        return checkoutReady;
     }
 
     public boolean expressEligible() {
@@ -25,6 +36,10 @@ public class Customer implements Comparable<Customer> {
 
     public int getItems() {
         return items;
+    }
+
+    public double getArrivalTime() {
+        return arrivalTime;
     }
 
     @Override
@@ -41,7 +56,7 @@ public class Customer implements Comparable<Customer> {
     }
 
     public String toString() {
-        return "Customer arrived at " + arrivalTime + " is getting " + items + " items andtakes this long " + pickupTime;
+        return "Customer arrived at " + arrivalTime + " is getting " + items + " items and takes this long " + pickupTime;
     }
 
     
