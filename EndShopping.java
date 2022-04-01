@@ -1,10 +1,6 @@
-import java.util.PriorityQueue;
-
-public class EndShopping extends PriorityQueue<Customer> {
+public class EndShopping extends Event {
     
-    public EndShopping(double simClock, Customer customer) {
-        simClock = customer.getArrivalTime() + customer.checkoutReadyTime();
-        this.poll();
-
+    public EndShopping(double time, Customer customer) {
+        super(time, customer);
     }
 }
