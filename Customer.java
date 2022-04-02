@@ -44,7 +44,9 @@ public class Customer implements Comparable<Customer> {
         return items;
     }
 
-    
+    public int getCustomerID() {
+        return id;
+    }
 
     @Override
     public int compareTo(Customer other) {
@@ -60,7 +62,7 @@ public class Customer implements Comparable<Customer> {
     }
 
     public String toString() {
-        return arrivalTime + " Arrival Customer " + id;
+        return  "Customer " + id;
     }
 
     

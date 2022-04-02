@@ -1,6 +1,4 @@
-import java.util.PriorityQueue;
-
-public class Event extends PriorityQueue<Customer> implements Comparable<Event> {
+public class Event implements Comparable<Event> {
     
     private Customer customer;
     private double time;
@@ -8,6 +6,22 @@ public class Event extends PriorityQueue<Customer> implements Comparable<Event> 
     public Event(double time, Customer customer) {
         this.time = time;
         this.customer = customer;
+    }
+
+    public double endShoppingTime() {
+        return customer.checkoutReadyTime();
+    }
+
+    public double endCheckoutTime(CheckoutLane lane) {
+        return lane.checkoutTime(getCustomer());
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public double getArrivalTime() {
+        return customer.getArrivalTime();
     }
 
     @Override
