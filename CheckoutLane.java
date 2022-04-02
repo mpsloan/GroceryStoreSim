@@ -1,6 +1,6 @@
-import java.util.PriorityQueue;
+import java.util.ArrayList;
 
-public class CheckoutLane extends PriorityQueue<Customer> implements Comparable<CheckoutLane> {
+public class CheckoutLane extends ArrayList<Customer> implements Comparable<CheckoutLane> {
 
     private double minPerItem = 0.05;
     private double processing = 2.0;
@@ -32,6 +32,6 @@ public class CheckoutLane extends PriorityQueue<Customer> implements Comparable<
     }
 
     public String toString() {
-        return "Lane " +id+ " (" +this.size()+ ")";
+        return "Lane " +id+ " (" +(this.size() - 1)+ ")";
     }
 }

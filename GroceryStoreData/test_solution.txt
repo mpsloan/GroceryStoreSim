@@ -1,0 +1,13 @@
+1.0: Arrival Customer 2
+2.0: Arrival Customer 1
+2.0: Arrival Customer 0
+8.0: Finished Shopping Customer 2
+More than 12 items, chose Lane 0
+8.0: Finished Shopping Customer 1
+12 or fewer chose Lane 1
+9.5: Finished Shopping Customer 0
+More than 12 items, chose Lane 2
+10.6: Finished Checkout Customer 1 on Lane 1 (0)
+10.7: Finished Checkout Customer 2 on Lane 0 (0)
+12.25: Finished Checkout Customer 0 on Lane 2 (0)
+0.0

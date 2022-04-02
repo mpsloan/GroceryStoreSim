@@ -5,6 +5,8 @@ public class Customer implements Comparable<Customer> {
     private double pickupTime;
     private boolean checkoutReady;
     private int id;
+    private int laneID;
+    private double waitTime = 0;
 
     public Customer(double arrivalTime, int items, double pickupTime, int id) {
         this.arrivalTime = arrivalTime;
@@ -31,6 +33,22 @@ public class Customer implements Comparable<Customer> {
         return checkoutReady;
     }
 
+    public void setWaitTime(double waitTime) {
+        this.waitTime = waitTime;
+    }
+
+    public double getWaitTime() {
+        return waitTime;
+    }
+
+    public void setLaneID(int laneID) {
+        this.laneID = laneID;
+    }
+
+    public int getLaneID() {
+        return laneID;
+    }
+
     public boolean expressEligible() {
         if (items <= 12) {
             return true;
@@ -47,7 +65,7 @@ public class Customer implements Comparable<Customer> {
     public int getCustomerID() {
         return id;
     }
-
+    
     @Override
     public int compareTo(Customer other) {
         if (this.arrivalTime < other.arrivalTime) {
@@ -60,7 +78,7 @@ public class Customer implements Comparable<Customer> {
             return 0;
         }
     }
-
+    
     public String toString() {
         return  "Customer " + id;
     }

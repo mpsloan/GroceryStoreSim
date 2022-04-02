@@ -16,6 +16,10 @@ public class Event implements Comparable<Event> {
         return lane.checkoutTime(getCustomer());
     }
 
+    public double getTime() {
+        return time;
+    }
+
     public Customer getCustomer() {
         return customer;
     }

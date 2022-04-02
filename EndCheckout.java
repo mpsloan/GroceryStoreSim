@@ -8,6 +8,6 @@ public class EndCheckout extends Event {
     }
 
     public String toString() {
-        return endCheckoutTime(lane)+ ": Finished Checkout " +getCustomer()+ " on " +lane;
+        return getTime()+ ": Finished Checkout " +getCustomer()+ " on " +lane;
     }
 }

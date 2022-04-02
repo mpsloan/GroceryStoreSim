@@ -27,16 +27,18 @@ public class GroceryStore {
     }
     public static void main(String[] args) throws IOException {
         double simClock = 0;
+        double tempWait = 0;
         double averageWaitTime = 0;
         PriorityQueue<Event> events = new PriorityQueue<>();
+        PriorityQueue<Event> events2 = new PriorityQueue<>();
         File f = new File("GroceryStoreData/test_solution.txt");
         FileWriter writer = new FileWriter(f);
         ArrayList<Customer> customers = customers("GroceryStoreData/arrival simple.txt");
-        Collections.sort(customers);
         ArrayList<CheckoutLane> lanes = new ArrayList<>();
         for (Customer c: customers) {
             Arrival arrival = new Arrival(c.getArrivalTime(), c);
             events.add(arrival);
+            events2.add(arrival);
         }
         for (int i = 0; i < 5; i++) {
             if (i < 4) {
@@ -52,34 +54,50 @@ public class GroceryStore {
 
         while (!events.isEmpty()) {
             Event event = events.poll();
+            Collections.sort(lanes);
             if (event instanceof Arrival) {
                 simClock = event.getArrivalTime();
-                writer.write(event + "\n");
-                EndShopping eShopping = new EndShopping(event.endShoppingTime()+ customers.get(0).getArrivalTime(), customers.get(0));
+                EndShopping eShopping = new EndShopping(event.endShoppingTime() + simClock, event.getCustomer());
                 events.offer(eShopping);
+                events2.offer(eShopping);
             }
-    
             else if(event instanceof EndShopping) {
-                simClock = event.endShoppingTime() + customers.get(0).getArrivalTime();
-                writer.write(event + "\n");
-                if (lanes.get(0) instanceof ExpressLane && customers.get(0).expressEligible()) {
-                    writer.write("12 or fewer, chose " +lanes.get(0) + "\n");
-                    lanes.get(0).offer(customers.get(0));
+                simClock = event.endShoppingTime() + event.getCustomer().getArrivalTime();
+                if (lanes.get(0) instanceof ExpressLane && event.getCustomer().expressEligible()) {
+                    for (Customer c: lanes.get(0)) {
+                        tempWait += lanes.get(0).checkoutTime(c);
+                    }
+                    event.getCustomer().setWaitTime(tempWait);
+                    event.getCustomer().setLaneID(lanes.get(0).getLaneID());
+                    lanes.get(0).add(event.getCustomer());
                 }
                 else {
-                    writer.write("More than 12, chose " +lanes.get(0) + "\n");
-                    lanes.get(0).offer(customers.get(0));
+                    for (Customer c: lanes.get(0)) {
+                        tempWait += lanes.get(0).checkoutTime(c);
+                    }
+                    event.getCustomer().setWaitTime(tempWait);
+                    event.getCustomer().setLaneID(lanes.get(0).getLaneID());
+                    lanes.get(0).add(event.getCustomer());
                 }
-                EndCheckout eCheckout = new EndCheckout(event.endCheckoutTime(lanes.get(0)), customers.get(0), lanes.get(0));
+                EndCheckout eCheckout = new EndCheckout(event.endCheckoutTime(lanes.get(0)) + simClock, event.getCustomer(), lanes.get(0));
                 events.offer(eCheckout);
+                events2.offer(eCheckout);
+
+                
             }
             else {
                 simClock = event.endCheckoutTime(lanes.get(0));
-                writer.write(event + "\n");
-                lanes.remove(0);
-                customers.remove(0);
             }
         }
+
+        while(!events2.isEmpty()) {
+            writer.write(events2.poll() + "\n");
+        }
+        for (Customer c: customers) {
+            averageWaitTime += c.getWaitTime();
+        }
+        averageWaitTime = averageWaitTime / customers.size();
+        writer.write(averageWaitTime + "");
         writer.close();
     }
 }
