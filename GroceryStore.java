@@ -1,15 +1,3 @@
-/*
-Michael Sloan
-CS 1181L-07
-Luke Holt
-April 3, 2022
-This program reads in information from a .txt file and creates customer objects based on their arrival time,
-number of items, and the time it takes them to pick these items up. The goal of this program is to find the 
-optimal number of lanes, express and regular, to have open in order to get the smallest amount of customer
-waiting time, while also trying to save money. My answer to this problem is printed out to my_solution.txt
-and there is also a spreadsheet, as well as a .pdf file explaining my results and what the most efficient
-operating style is.
-*/
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
