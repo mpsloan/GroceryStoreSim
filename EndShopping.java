@@ -5,12 +5,12 @@ public class EndShopping extends Event {
     }
 
     public String toString() {
-        String s = getTime()+ ": Finished Shopping " +getCustomer();
+        String s = String.format("%,.2f", getTime())+ ": Finished Shopping " +getCustomer();
         if(getCustomer().getItems() <= 12) {
-            s += "\n12 or fewer chose Lane " +getCustomer().getLaneID() ;
+            s += "\n12 or fewer chose Lane " +getCustomer().getLaneID()+ " (" +getCustomer().getLaneSize()+ ")";
         }
         else {
-            s += "\nMore than 12 items, chose Lane " +getCustomer().getLaneID();
+            s += "\nMore than 12 items, chose Lane " +getCustomer().getLaneID()+ " (" +getCustomer().getLaneSize()+ ")";
         }
         return s;
     }

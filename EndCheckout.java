@@ -8,6 +8,6 @@ public class EndCheckout extends Event {
     }
 
     public String toString() {
-        return getTime()+ ": Finished Checkout " +getCustomer()+ " on " +lane;
+        return String.format("%,.2f", getTime())+ ": Finished Checkout " +getCustomer()+ " on " +lane+ " (" +String.format("%,.2f", getCustomer().getWaitTime())+ " minute wait)";
     }
 }

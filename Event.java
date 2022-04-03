@@ -13,11 +13,15 @@ public class Event implements Comparable<Event> {
     }
 
     public double endCheckoutTime(CheckoutLane lane) {
-        return lane.checkoutTime(getCustomer());
+        return this.getCustomer().checkoutReadyTime() + this.getCustomer().getWaitTime() + lane.checkoutTime(getCustomer());
     }
 
     public double getTime() {
         return time;
+    }
+
+    public void setTime(double time){
+        this.time = time;
     }
 
     public Customer getCustomer() {

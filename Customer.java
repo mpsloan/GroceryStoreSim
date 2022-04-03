@@ -6,7 +6,10 @@ public class Customer implements Comparable<Customer> {
     private boolean checkoutReady;
     private int id;
     private int laneID;
-    private double waitTime = 0;
+    private double waitTime = 0.0;
+    private int sizeOfLane;
+    private double checkoutReadyTime;
+    private double checkedOutTime;
 
     public Customer(double arrivalTime, int items, double pickupTime, int id) {
         this.arrivalTime = arrivalTime;
@@ -20,13 +23,22 @@ public class Customer implements Comparable<Customer> {
         return arrivalTime;
     }
 
+    public void setLaneSize(int size) {
+        this.sizeOfLane = size;
+    }
+
+    public int getLaneSize() {
+        return sizeOfLane;
+    }
+
     public double checkoutReadyTime() {
-        return items * pickupTime;
+        return this.arrivalTime + items * pickupTime;
     }
 
     public boolean checkoutReady() {
         return checkoutReady;
     }
+
 
     public boolean isReady() {
         checkoutReady = true;
@@ -69,10 +81,10 @@ public class Customer implements Comparable<Customer> {
     @Override
     public int compareTo(Customer other) {
         if (this.arrivalTime < other.arrivalTime) {
-            return -1;
+            return 1;
         }
         else if (this.arrivalTime > other.arrivalTime) {
-            return 1;
+            return -1;
         }
         else {
             return 0;

@@ -33,60 +33,130 @@ public class GroceryStore {
         PriorityQueue<Event> events2 = new PriorityQueue<>();
         File f = new File("GroceryStoreData/test_solution.txt");
         FileWriter writer = new FileWriter(f);
-        ArrayList<Customer> customers = customers("GroceryStoreData/arrival simple.txt");
+        //ArrayList<Customer> customers = customers("GroceryStoreData/arrival simple.txt");
+        ArrayList<Customer> customers = customers("GroceryStoreData/arrival medium.txt");
         ArrayList<CheckoutLane> lanes = new ArrayList<>();
+
         for (Customer c: customers) {
             Arrival arrival = new Arrival(c.getArrivalTime(), c);
             events.add(arrival);
             events2.add(arrival);
         }
-        for (int i = 0; i < 5; i++) {
-            if (i < 4) {
-                CheckoutLane checkLane = new CheckoutLane(i);
-                lanes.add(checkLane);
-            }
-            else {
-                ExpressLane eLane = new ExpressLane(i);
-                lanes.add(eLane);
-            }
 
-        }
+        // for (int i = 0; i < 5; i++) {
+        //     if (i < 4) {
+        //         CheckoutLane checkLane = new CheckoutLane(i);
+        //         lanes.add(checkLane);
+        //     }
+        //     else {
+        //         ExpressLane eLane = new ExpressLane(i);
+        //         lanes.add(eLane);
+        //     }
+
+        // }
+
+        CheckoutLane checkLane1 = new CheckoutLane(1);
+        CheckoutLane checkLane2 = new CheckoutLane(2);
+        CheckoutLane checkLane3 = new CheckoutLane(3);
+        CheckoutLane checkLane4 = new CheckoutLane(4);
+        CheckoutLane checkLane5 = new CheckoutLane(5);
+        CheckoutLane checkLane6 = new CheckoutLane(6);
+        CheckoutLane checkLane7 = new CheckoutLane(7);
+        CheckoutLane checkLane8 = new CheckoutLane(8);
+        CheckoutLane checkLane9 = new CheckoutLane(9);
+        CheckoutLane checkLane10 = new CheckoutLane(10);
+        CheckoutLane checkLane11 = new CheckoutLane(11);
+        CheckoutLane checkLane12 = new CheckoutLane(12);
+
+        ExpressLane eLane = new ExpressLane(99);
+
+        lanes.add(checkLane1);
+        lanes.add(checkLane2);
+        lanes.add(checkLane3);
+        lanes.add(checkLane4);
+        lanes.add(checkLane5);
+        lanes.add(checkLane6);
+        lanes.add(checkLane7);
+        lanes.add(checkLane8);
+        lanes.add(checkLane9);
+        lanes.add(checkLane10);
+        lanes.add(checkLane11);
+        lanes.add(checkLane12);
+
+        lanes.add(eLane);
+        // ExpressLane eLane1 = new ExpressLane(0);
+        // lanes.add(eLane1);
+        // ExpressLane eLane2 = new ExpressLane(1);
+        // lanes.add(eLane2);
+        // CheckoutLane only = new CheckoutLane(2);
+        // lanes.add(only);
 
         while (!events.isEmpty()) {
             Event event = events.poll();
             Collections.sort(lanes);
             if (event instanceof Arrival) {
-                simClock = event.getArrivalTime();
-                EndShopping eShopping = new EndShopping(event.endShoppingTime() + simClock, event.getCustomer());
+                simClock = event.endShoppingTime();
+                EndShopping eShopping = new EndShopping(simClock, event.getCustomer());
                 events.offer(eShopping);
                 events2.offer(eShopping);
             }
             else if(event instanceof EndShopping) {
-                simClock = event.endShoppingTime() + event.getCustomer().getArrivalTime();
-                if (lanes.get(0) instanceof ExpressLane && event.getCustomer().expressEligible()) {
-                    for (Customer c: lanes.get(0)) {
-                        tempWait += lanes.get(0).checkoutTime(c);
-                    }
-                    event.getCustomer().setWaitTime(tempWait);
-                    event.getCustomer().setLaneID(lanes.get(0).getLaneID());
-                    lanes.get(0).add(event.getCustomer());
-                }
-                else {
-                    for (Customer c: lanes.get(0)) {
-                        tempWait += lanes.get(0).checkoutTime(c);
-                    }
-                    event.getCustomer().setWaitTime(tempWait);
-                    event.getCustomer().setLaneID(lanes.get(0).getLaneID());
-                    lanes.get(0).add(event.getCustomer());
-                }
-                EndCheckout eCheckout = new EndCheckout(event.endCheckoutTime(lanes.get(0)) + simClock, event.getCustomer(), lanes.get(0));
+                simClock = event.endShoppingTime();
+                
+                /*
+                    Checkout process:
+                    1)  Find the shortest lane
+                    2)  Add event.getCustomer() to shortestlane
+                    ..  suggestion is to stop here ..
+                */
+
+                CheckoutLane l = pickALane(event.getCustomer(), lanes);
+                l.add(event.getCustomer());
+                l.setProcessCount(l.getProcessCount()+1);
+                event.getCustomer().setLaneID(l.getLaneID());
+                simClock = event.endCheckoutTime(l) + simClock;
+                EndCheckout eCheckout = new EndCheckout(simClock, event.getCustomer(), l);
                 events.offer(eCheckout);
                 events2.offer(eCheckout);
+                //tempWait = 0;
 
                 
             }
             else {
-                simClock = event.endCheckoutTime(lanes.get(0));
+                tempWait = 0.0;
+                CheckoutLane currentLane = null;
+
+                for(CheckoutLane l : lanes){
+                    if(l.getLaneID() == event.getCustomer().getLaneID()){
+                        currentLane = l;
+                        break;
+                    }
+                }
+                
+                if(currentLane.size() == 1 || currentLane.get(0) == event.getCustomer()){
+                    //  I'm the only customer
+                    tempWait = 0.0;
+
+                } else {
+                    //  Find me in line
+                    int positionInLine = 0;
+                    for (Customer customer : currentLane) {
+                        if(customer == event.getCustomer()){
+                            break;
+                        }
+                        positionInLine++;
+                    }                
+                    //  Look at previous guy
+                    double prevCheckoutTime = currentLane.get(positionInLine-1).getWaitTime()+ currentLane.get(positionInLine-1).checkoutReadyTime() + currentLane.checkoutTime(currentLane.get(positionInLine-1));
+                    double readyCheckOutTime = event.getCustomer().checkoutReadyTime();
+                    //  Prev guy and I for tempwait
+                    tempWait = Math.abs(prevCheckoutTime - readyCheckOutTime);
+                    currentLane.setTotalWaitTime(tempWait);
+                }
+                event.getCustomer().setWaitTime(tempWait);
+                simClock = event.endCheckoutTime(currentLane);
+                event.setTime(simClock);
+                currentLane.remove(event.getCustomer());
             }
         }
 
@@ -97,7 +167,37 @@ public class GroceryStore {
             averageWaitTime += c.getWaitTime();
         }
         averageWaitTime = averageWaitTime / customers.size();
-        writer.write(averageWaitTime + "");
+        writer.write("Average wait time: " +averageWaitTime);
         writer.close();
+
+        Collections.sort(lanes);
+        for (CheckoutLane lane : lanes) {
+            System.out.println("Lane #" + lane.getLaneID() + ": Processed " + lane.getProcessCount() + " "
+            + lane.getTotalWaitTime()/lane.getProcessCount() 
+            );
+        }
+    }
+
+    private static CheckoutLane pickALane(Customer customer, ArrayList<CheckoutLane> lanes) {
+        CheckoutLane l = null;
+        ArrayList<CheckoutLane> regular = new ArrayList<>();
+        ArrayList<CheckoutLane> express = new ArrayList<>();
+        for (CheckoutLane currLane : lanes) {
+            if(currLane instanceof ExpressLane){
+                express.add(currLane);
+            }else{
+                regular.add(currLane);
+            }
+        }
+
+        if(customer.expressEligible()){
+            Collections.sort(express);
+            l = express.get(0);
+        }else{
+            Collections.sort(regular);
+            l = regular.get(0);
+        }
+
+        return l;
     }
 }

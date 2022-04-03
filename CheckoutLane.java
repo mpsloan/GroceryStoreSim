@@ -5,7 +5,8 @@ public class CheckoutLane extends ArrayList<Customer> implements Comparable<Chec
     private double minPerItem = 0.05;
     private double processing = 2.0;
     private int id;
-
+    private int processCount = 0;
+    private double totalWaitTime = 0;
     public CheckoutLane(int id) {
         this.id = id;
     }
@@ -17,6 +18,23 @@ public class CheckoutLane extends ArrayList<Customer> implements Comparable<Chec
     public int getLaneID() {
         return id;
     }
+
+    public int getProcessCount() {
+        return this.processCount;
+    }
+
+    public void setProcessCount(int processCount) {
+        this.processCount = processCount;
+    }
+
+    public double getTotalWaitTime() {
+        return this.totalWaitTime;
+    }
+
+    public void setTotalWaitTime(double totalWaitTime) {
+        this.totalWaitTime += totalWaitTime;
+    }
+
 
     @Override
     public int compareTo(CheckoutLane other) {
@@ -32,6 +50,6 @@ public class CheckoutLane extends ArrayList<Customer> implements Comparable<Chec
     }
 
     public String toString() {
-        return "Lane " +id+ " (" +(this.size() - 1)+ ")";
+        return "Lane " +id+ " (" +(this.size())+ ")";
     }
 }
